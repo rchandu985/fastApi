@@ -1,0 +1,24 @@
+version: '2'
+services:
+      
+  m2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    
+    volumes:
+      - D:/agribridge_projects/Data:/Data
+    ports:
+      - 7000:7000
+    environment:
+      - DATA_PATH=/Data
+      - NEXT_TRIGGER_END_POINT=http://host.docker.internal:3000/layerstacking/trigger
+      - NEXT_TRIGGER_END_POINT_ENABLE=True
+      - FASTAPI_COMMAND=uvicorn api_app:app --host 0.0.0.0 --port 7000 --workers 10
+
+
+
+
+      
+    
