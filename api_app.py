@@ -3,6 +3,32 @@ from pydantic import BaseModel
 import uvicorn
 #from next_process_trigger import trigger
 import os
+from fastapi.openapi.utils import get_openapi
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/")
+async def main():
+    return {"message": "Hello World"}
+
 app=FastAPI()
 
 @app.get("/")
@@ -29,5 +55,17 @@ async def post(item:Item,next_process_trigger:BackgroundTasks):
   #r"D:\agribridge_projects\micro_service_arc",str(c),["NDVI", "NDWI", "VARI", "MCARI", "NIR"],file_name_consider
   return {"message":"success"}
 
+#it gives the interface for control the apis
+def my_schema():
+   openapi_schema = get_openapi(
+       title="Api Testing",
+       version="1.0",
+       description="Hi",
+       routes=app.routes,
+   )
+   app.openapi_schema = openapi_schema
+   return app.openapi_schema
+
+
 if __name__=="__main__":
-  uvicorn.run("api_app:app",workers=10,host="127.2.2.2",port=2000)
+  uvicorn.run("api_app:app",workers=12,host="localhost",port=2000)
